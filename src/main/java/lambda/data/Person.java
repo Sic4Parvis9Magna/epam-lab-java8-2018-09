@@ -1,5 +1,4 @@
 package lambda.data;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.io.Serializable;
@@ -28,7 +27,7 @@ public class Person implements Serializable {
     }
 
     public String getLastName(Person this) {
-        return this.lastName;
+       return this.lastName;
     }
 
     public int getAge() {
