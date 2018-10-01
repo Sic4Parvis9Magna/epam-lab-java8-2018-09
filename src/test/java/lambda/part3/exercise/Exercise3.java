@@ -5,6 +5,7 @@ import lambda.data.JobHistoryEntry;
 import lambda.data.Person;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -17,20 +18,26 @@ import static org.hamcrest.Matchers.contains;
 class Exercise3 {
 
     private static class LazyMapHelper<T, R> {
+        private List<T> result;
+        private Function<T,R> mapping;
+
+        private LazyMapHelper(List<T> source, Function<T,R> mapping) {
+            result = new ArrayList<>(source);
+            this.mapping = mapping;
+        }
 
         public static <T> LazyMapHelper<T, T> from(List<T> list) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper<>(list,Function.identity());
         }
 
         public List<R> force() {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            List<R> output = new ArrayList<>();
+            result.forEach(element-> output.add(mapping.apply(element)));
+            return output;
         }
 
         public <R2> LazyMapHelper<T, R2> map(Function<R, R2> mapping) {
-            // TODO реализация
-            throw new UnsupportedOperationException();
+            return new LazyMapHelper(this.result, this.mapping.andThen(mapping));
         }
     }
 
@@ -44,6 +51,14 @@ class Exercise3 {
         // TODO                              .map(Person -> String(full name))
         // TODO                              .map(String -> Integer(length from string))
         // TODO                              .force();
+        Function<Employee, Person> personExtractor = Employee::getPerson;
+        Function<Person, String> fullNameExtractor = Person::getFullName;
+        Function<String, Integer> stringToLengthConvertor = String::length;
+        lengths = LazyMapHelper.from(employees)
+                .map(personExtractor)
+                .map(fullNameExtractor)
+                .map(stringToLengthConvertor)
+                .force();
         assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
     }
 
