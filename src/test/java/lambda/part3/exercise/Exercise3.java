@@ -51,13 +51,10 @@ class Exercise3 {
         // TODO                              .map(Person -> String(full name))
         // TODO                              .map(String -> Integer(length from string))
         // TODO                              .force();
-        Function<Employee, Person> personExtractor = Employee::getPerson;
-        Function<Person, String> fullNameExtractor = Person::getFullName;
-        Function<String, Integer> stringToLengthConvertor = String::length;
         lengths = LazyMapHelper.from(employees)
-                .map(personExtractor)
-                .map(fullNameExtractor)
-                .map(stringToLengthConvertor)
+                .map(Employee::getPerson)
+                .map(Person::getFullName)
+                .map(String::length)
                 .force();
         assertThat(lengths, contains(14, 19, 14, 15, 14, 16));
     }
